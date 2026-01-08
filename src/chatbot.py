@@ -1,6 +1,6 @@
 """
 Chatbot Core - Sử dụng Langchain và LLM
-Hỗ trợ cả OpenAI API và local LLM (vLLM)
+Hỗ trợ: OpenAI API, Ollama (local), vLLM (local)
 """
 
 import os
@@ -11,6 +11,7 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
 from langchain_community.chat_models import ChatOpenAI
+from langchain_community.llms import Ollama
 from langchain.schema import Document
 
 from vector_store import VectorStore
@@ -25,7 +26,7 @@ class MEChatbot:
         self, 
         documents_path: str = "./documents",
         vector_db_path: str = "./vector_db",
-        use_local_llm: bool = False
+        llm_provider: str = "ollama"  # "openai", "ollama", "vllm"
     ):
         self.documents_path = documents_path
         self.vector_db_path = vector_db_path
@@ -36,7 +37,7 @@ class MEChatbot:
         self.document_compare = DocumentCompare()
         
         # Initialize LLM
-        self.llm = self._initialize_llm(use_local_llm)
+        self.llm = self._initialize_llm(llm_provider)
         
         # Memory for conversation
         self.memory = ConversationBufferMemory(
@@ -51,27 +52,50 @@ class MEChatbot:
         # Create QA chain
         self.qa_chain = self._create_qa_chain()
     
-    def _initialize_llm(self, use_local: bool = False):
-        """Initialize LLM - OpenAI hoặc local vLLM"""
-        if use_local:
-            # Sử dụng local LLM endpoint (vLLM)
+    def _initialize_llm(self, provider: str = "ollama"):
+        """Initialize LLM - OpenAI, Ollama, hoặc vLLM"""
+        temperature = float(os.getenv("TEMPERATURE", 0.7))
+        
+        if provider == "ollama":
+            # Sử dụng Ollama (local, miễn phí, dễ cài đặt)
+            model_name = os.getenv("OLLAMA_MODEL", "llama2")
+            print(f"Using Ollama with model: {model_name}")
+            
+            return Ollama(
+                model=model_name,
+                temperature=temperature,
+                base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+            )
+        
+        elif provider == "vllm":
+            # Sử dụng vLLM endpoint
             base_url = os.getenv("LLM_API_BASE", "http://localhost:8000/v1")
             model_name = os.getenv("LLM_MODEL_NAME", "Qwen3-14B-AWQ")
+            print(f"Using vLLM with model: {model_name}")
             
             return ChatOpenAI(
                 model_name=model_name,
                 openai_api_base=base_url,
-                openai_api_key="EMPTY",  # vLLM không cần API key
-                temperature=float(os.getenv("TEMPERATURE", 0.7)),
+                openai_api_key="EMPTY",
+                temperature=temperature,
                 max_tokens=int(os.getenv("MAX_TOKENS", 2048))
             )
-        else:
+        
+        else:  # openai
             # Sử dụng OpenAI API
+            api_key = os.getenv("OPENAI_API_KEY")
+            if not api_key:
+                raise ValueError(
+                    "OPENAI_API_KEY not found in .env file. "
+                    "Please add your API key or use 'ollama' provider instead."
+                )
+            print("Using OpenAI API")
+            
             return ChatOpenAI(
                 model_name="gpt-3.5-turbo",
-                temperature=float(os.getenv("TEMPERATURE", 0.7)),
+                temperature=temperature,
                 max_tokens=int(os.getenv("MAX_TOKENS", 2048)),
-                openai_api_key=os.getenv("OPENAI_API_KEY")
+                openai_api_key=api_key
             )
     
     def _setup_vector_store(self):
@@ -101,7 +125,7 @@ class MEChatbot:
         """Tạo Conversational Retrieval Chain"""
         
         # Custom prompt cho chatbot
-        prompt_template = """Bạn là trợ lý AI của ngân hàng ME, hỗ trợ 10,000 nhân viên.
+        prompt_template = """Bạn là trợ lý AI của công ty ME, hỗ trợ 10,000 nhân viên.
 Nhiệm vụ của bạn là trả lời câu hỏi dựa trên tài liệu nội bộ được cung cấp.
 
 Ngữ cảnh từ tài liệu:
@@ -199,9 +223,9 @@ if __name__ == "__main__":
     # Test chatbot
     print("Initializing ME Chatbot...")
     
-    # Sử dụng OpenAI (default) hoặc local LLM
-    # Đổi use_local_llm=True nếu chạy vLLM local
-    chatbot = MEChatbot(use_local_llm=False)
+    # Sử dụng Ollama (default, miễn phí)
+    # Các options: "ollama", "openai", "vllm"
+    chatbot = MEChatbot(llm_provider="ollama")
     
     print("\n" + "="*50)
     print("ME Employee Assistant Chatbot")

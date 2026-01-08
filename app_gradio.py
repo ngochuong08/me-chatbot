@@ -19,7 +19,7 @@ print("Initializing ME Chatbot...")
 chatbot = MEChatbot(
     documents_path="./documents",
     vector_db_path="./vector_db",
-    use_local_llm=False  # Đổi thành True nếu dùng vLLM local
+    llm_provider="ollama"  # "ollama" (miễn phí), "openai", hoặc "vllm"
 )
 
 document_compare = DocumentCompare()

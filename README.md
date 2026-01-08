@@ -4,15 +4,18 @@ Chatbot hỗ trợ nhân viên với khả năng:
 
 - 🔍 Tìm kiếm tài liệu bằng ngôn ngữ tự nhiên
 - 📊 So sánh các phiên bản tài liệu khác nhau
-- 🤖 Sử dụng LLM (Qwen3-14B-AWQ) qua vLLM
+- 🤖 Sử dụng LLM local **MIỄN PHÍ** qua Ollama
+- 🇻🇳 Hỗ trợ tiếng Việt xuất sắc với Qwen2
 
 ## Công nghệ sử dụng
 
-- **LLM**: Qwen3-14B-AWQ (deployed with vLLM)
-- **Framework**: Langchain, Langgraph
+- **LLM**: Qwen2 (4.4GB) - Hỗ trợ tiếng Việt tốt nhất
+- **LLM Runtime**: Ollama (miễn phí, chạy local, không cần API key)
+- **Framework**: Langchain
 - **Language**: Python
 - **UI**: Gradio & Node.js Web Interface
-- **Vector DB**: ChromaDB / FAISS
+- **Vector DB**: FAISS
+- **Embeddings**: Sentence Transformers (multilingual)
 
 ## Cài đặt
 
@@ -28,28 +31,45 @@ source venv/bin/activate  # Linux/Mac
 pip install -r requirements.txt
 ```
 
-### 2. Cấu hình
+### 2. Cài đặt Ollama (LLM miễn phí)
+
+**macOS:**
+
+```bash
+# Tải và cài đặt từ website
+open https://ollama.com/download
+
+# HOẶC dùng Homebrew
+brew install ollama
+```
+
+**Linux:**
+
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
+**Windows:**
+Tải installer từ: https://ollama.com/download
+
+**Khởi động Ollama:**
+
+```bash
+# Start Ollama service (chạy trong terminal riêng)
+ollama serve
+
+# Download model Qwen2 (4.4GB - tốt nhất cho tiếng Việt)
+ollama pull qwen2
+```
+
+### 3. Cấu hình
 
 ```bash
 # Copy file cấu hình
 cp .env.example .env
 
-# Chỉnh sửa .env với thông tin của bạn
-nano .env
-```
-
-### 3. Setup vLLM (Optional - nếu chạy local LLM)
-
-```bash
-# Cài đặt vLLM
-pip install vllm
-
-# Chạy vLLM server với Qwen3-14B-AWQ
-python -m vllm.entrypoints.openai.api_server \
-    --model Qwen/Qwen3-14B-AWQ \
-    --quantization awq \
-    --dtype half \
-    --max-model-len 4096
+# File .env đã được cấu hình sẵn cho Ollama + Qwen2
+# Không cần chỉnh sửa gì thêm!
 ```
 
 ### 4. Thêm tài liệu
@@ -64,7 +84,9 @@ mkdir -p documents
 
 ## Chạy ứng dụng
 
-### Option 1: Gradio Interface
+**Lưu ý:** Đảm bảo Ollama đang chạy trước khi start chatbot!
+
+### Option 1: Gradio Interface (Khuyên dùng)
 
 ```bash
 python app_gradio.py
@@ -74,17 +96,17 @@ Mở browser tại: `http://localhost:7860`
 
 ### Option 2: Node.js Web Interface
 
+**Terminal 1 - Python API Server:**
+
 ```bash
-# Cài đặt Node.js dependencies
-cd web
-npm install
-
-# Chạy Python API server
-cd ..
 python api_server.py
+```
 
-# Chạy Node.js web server (terminal khác)
+**Terminal 2 - Node.js Web Server:**
+
+```bash
 cd web
+npm install  # Chỉ cần chạy lần đầu
 npm start
 ```
 
@@ -116,8 +138,8 @@ internal-chatbot/
 
 ### 1. Tìm kiếm tài liệu
 
-- Hỏi bằng ngôn ngữ tự nhiên
-- Tìm kiếm semantic search
+- Hỏi bằng ngôn ngữ tự nhiên (tiếng Việt hoặc tiếng Anh)
+- Tìm kiếm semantic search với FAISS
 - Trả về nguồn tài liệu tham khảo
 
 ### 2. So sánh tài liệu
@@ -125,6 +147,13 @@ internal-chatbot/
 - So sánh 2 phiên bản tài liệu
 - Highlight các thay đổi
 - Tóm tắt sự khác biệt
+
+### 3. Hoàn toàn miễn phí
+
+- ✅ Không cần API key
+- ✅ Chạy offline trên máy của bạn
+- ✅ Không lo về quota hay chi phí
+- ✅ Dữ liệu được bảo mật hoàn toàn
 
 ## API Endpoints
 
@@ -141,6 +170,59 @@ POST /api/upload
 - Body: FormData with file
 - Response: {"status": "success", "filename": "..."}
 ```
+
+## Các LLM Models được hỗ trợ
+
+Bạn có thể thay đổi model trong file `.env`:
+
+| Model        | Tiếng Việt | Size  | RAM cần | Khuyên dùng       |
+| ------------ | ---------- | ----- | ------- | ----------------- |
+| **qwen2** ⭐ | ⭐⭐⭐⭐⭐ | 4.4GB | 8GB     | ✅ Tốt nhất       |
+| llama3       | ⭐⭐⭐⭐   | 4.7GB | 8GB     | ✅ Chất lượng cao |
+| mistral      | ⭐⭐⭐     | 4.1GB | 8GB     | ✅ Nhanh          |
+| phi3         | ⭐⭐       | 2.2GB | 4GB     | ⚠️ Yếu tiếng Việt |
+
+**Đổi model:**
+
+```bash
+# Download model khác
+ollama pull llama3
+
+# Sửa file .env
+OLLAMA_MODEL=llama3
+```
+
+## Tùy chọn LLM khác
+
+Ngoài Ollama (mặc định), bạn có thể dùng:
+
+### Option A: OpenAI API (trả phí)
+
+```bash
+# Trong .env
+LLM_PROVIDER=openai
+OPENAI_API_KEY=sk-your-key-here
+```
+
+### Option B: vLLM (Advanced)
+
+```bash
+# Cài đặt vLLM
+pip install vllm
+
+# Chạy vLLM server
+python -m vllm.entrypoints.openai.api_server \
+    --model Qwen/Qwen2-7B-Instruct
+
+# Trong .env
+LLM_PROVIDER=vllm
+LLM_API_BASE=http://localhost:8000/v1
+```
+
+## Xem thêm
+
+- [OLLAMA_SETUP.md](OLLAMA_SETUP.md) - Hướng dẫn chi tiết về Ollama
+- [SETUP.md](SETUP.md) - Hướng dẫn setup đầy đủ
 
 ## License
 

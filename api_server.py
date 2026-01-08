@@ -21,7 +21,7 @@ print("Initializing ME Chatbot...")
 chatbot = MEChatbot(
     documents_path="./documents",
     vector_db_path="./vector_db",
-    use_local_llm=False  # Change to True if using vLLM local
+    llm_provider="ollama"  # "ollama" (miễn phí), "openai", hoặc "vllm"
 )
 
 # Store conversations in memory (in production, use Redis or database)
