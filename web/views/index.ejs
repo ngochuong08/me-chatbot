@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ME Employee Assistant Chatbot</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🤖 ME Employee Assistant</h1>
+        <p>Chatbot hỗ trợ 10,000 nhân viên - Powered by LLM & Langchain</p>
+        <nav>
+          <a href="/" class="active">Chat</a>
+          <a href="/search">Tìm kiếm</a>
+          <a href="/compare">So sánh</a>
+        </nav>
+      </header>
+
+      <div class="chat-container">
+        <div class="chat-box" id="chatBox">
+          <div class="welcome-message">
+            <h2>Xin chào! 👋</h2>
+            <p>Tôi là trợ lý AI của ME. Tôi có thể giúp bạn:</p>
+            <ul>
+              <li>🔍 Tìm kiếm thông tin trong tài liệu nội bộ</li>
+              <li>💡 Trả lời câu hỏi về quy định, chính sách</li>
+              <li>📊 So sánh các phiên bản tài liệu</li>
+              <li>📚 Trích dẫn nguồn tham khảo</li>
+            </ul>
+            <p><strong>Hãy đặt câu hỏi để bắt đầu!</strong></p>
+          </div>
+        </div>
+
+        <div class="chat-input-container">
+          <button id="resetBtn" class="reset-btn" title="Reset hội thoại">
+            🔄
+          </button>
+          <input
+            type="text"
+            id="messageInput"
+            placeholder="Nhập câu hỏi của bạn..."
+            autocomplete="off"
+          />
+          <button id="sendBtn" class="send-btn">Gửi</button>
+        </div>
+      </div>
+
+      <div class="info-panel">
+        <h3>💡 Gợi ý câu hỏi</h3>
+        <div class="suggestion-chips">
+          <button class="chip">Quy định nghỉ phép là gì?</button>
+          <button class="chip">Làm thế nào để xin tăng ca?</button>
+          <button class="chip">Chính sách làm việc từ xa?</button>
+          <button class="chip">Quy trình đánh giá hiệu suất?</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/chat.js"></script>
+  </body>
+</html>

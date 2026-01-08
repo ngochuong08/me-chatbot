@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>So sánh Tài liệu - ME Chatbot</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🤖 ME Employee Assistant</h1>
+        <p>Chatbot hỗ trợ 10,000 nhân viên - Powered by LLM & Langchain</p>
+        <nav>
+          <a href="/">Chat</a>
+          <a href="/search">Tìm kiếm</a>
+          <a href="/compare" class="active">So sánh</a>
+        </nav>
+      </header>
+
+      <div class="compare-container">
+        <h2>📊 So sánh Tài liệu</h2>
+        <p>So sánh 2 phiên bản tài liệu để xem sự khác biệt</p>
+
+        <div class="compare-form">
+          <div class="file-input-group">
+            <label>Tài liệu 1 (Phiên bản cũ)</label>
+            <input
+              type="text"
+              id="file1Path"
+              placeholder="Đường dẫn file 1 (VD: ./documents/quy_dinh_2023.pdf)"
+            />
+          </div>
+
+          <div class="file-input-group">
+            <label>Tài liệu 2 (Phiên bản mới)</label>
+            <input
+              type="text"
+              id="file2Path"
+              placeholder="Đường dẫn file 2 (VD: ./documents/quy_dinh_2024.pdf)"
+            />
+          </div>
+
+          <button id="compareBtn" class="send-btn">So sánh</button>
+        </div>
+
+        <div id="compareResults" class="compare-results"></div>
+      </div>
+    </div>
+
+    <script src="/js/compare.js"></script>
+  </body>
+</html>

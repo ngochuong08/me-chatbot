@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tìm kiếm Tài liệu - ME Chatbot</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🤖 ME Employee Assistant</h1>
+        <p>Chatbot hỗ trợ 10,000 nhân viên - Powered by LLM & Langchain</p>
+        <nav>
+          <a href="/">Chat</a>
+          <a href="/search" class="active">Tìm kiếm</a>
+          <a href="/compare">So sánh</a>
+        </nav>
+      </header>
+
+      <div class="search-container">
+        <h2>🔍 Tìm kiếm Tài liệu</h2>
+        <p>Tìm kiếm thông tin trong tài liệu nội bộ bằng từ khóa</p>
+
+        <div class="search-box">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Nhập từ khóa tìm kiếm... (VD: quy định nghỉ phép)"
+            autocomplete="off"
+          />
+          <button id="searchBtn" class="send-btn">Tìm kiếm</button>
+        </div>
+
+        <div id="searchResults" class="search-results"></div>
+      </div>
+    </div>
+
+    <script src="/js/search.js"></script>
+  </body>
+</html>

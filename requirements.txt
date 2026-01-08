@@ -1,0 +1,14 @@
+langchain==0.1.0
+langchain-community==0.0.10
+langchain-core==0.1.10
+openai==1.10.0
+chromadb==0.4.22
+sentence-transformers==2.3.1
+gradio==4.16.0
+python-dotenv==1.0.0
+PyPDF2==3.0.1
+python-docx==1.1.0
+tiktoken==0.5.2
+faiss-cpu==1.8.0
+numpy==1.26.4
+gradio
